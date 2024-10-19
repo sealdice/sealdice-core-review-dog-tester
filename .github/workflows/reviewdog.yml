@@ -5,12 +5,12 @@ on:
     paths:
       - '**.go'
       - 'go.mod'
-      - '.github/workflows/.reviewdog.yml'
+      - '.github/workflows/reviewdog.yml'
   pull_request:
     paths:
       - '**.go'
       - 'go.mod'
-      - '.github/workflows/.reviewdog.yml'
+      - '.github/workflows/reviewdog.yml'
 
 jobs:
   review-dog:
