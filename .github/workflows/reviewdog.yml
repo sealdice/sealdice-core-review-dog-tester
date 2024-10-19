@@ -6,7 +6,7 @@ on:
       - '**.go'
       - 'go.mod'
       - '.github/workflows/reviewdog.yml'
-  pull_request_target:
+  pull_request:
     paths:
       - '**.go'
       - 'go.mod'
