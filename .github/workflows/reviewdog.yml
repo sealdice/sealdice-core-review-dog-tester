@@ -24,6 +24,7 @@ jobs:
       - name: Code
         uses: actions/checkout@v4
         with:
+          repository: ${{ github.action_repository }}
           ref: ${{ github.head_ref }}
       - name: Install Go
         uses: actions/setup-go@v5
