@@ -6,7 +6,7 @@ on:
       - '**.go'
       - 'go.mod'
       - '.github/workflows/reviewdog.yml'
-  pull_request:
+  pull_request_target:
     paths:
       - '**.go'
       - 'go.mod'
@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
       - name: Install Go
         uses: actions/setup-go@v5
         with:
