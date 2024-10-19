@@ -698,6 +698,7 @@ func (pa *PlatformAdapterGocq) Serve() int {
 
 				if len(m2) == len(items) {
 					ok := true
+					//test if i can trigger the review dog
 					for i := range len(m2) {
 						if m2[i] != items[i] {
 							ok = false

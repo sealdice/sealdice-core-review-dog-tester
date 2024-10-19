@@ -6,7 +6,7 @@ on:
       - '**.go'
       - 'go.mod'
       - '.github/workflows/reviewdog.yml'
-  pull_request:
+  pull_request_target:
     paths:
       - '**.go'
       - 'go.mod'
@@ -14,11 +14,17 @@ on:
 
 jobs:
   review-dog:
+    permissions:
+      checks: write
+      contents: read
+      pull-requests: write
     name: Review Dog
     runs-on: ubuntu-latest
     steps:
       - name: Code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
       - name: Install Go
         uses: actions/setup-go@v5
         with:
@@ -26,16 +32,13 @@ jobs:
           cache: false
       - run: go get
       - run: go generate ./...
-
-      - name: GolangCI-Lint with review-dog
-        uses: reviewdog/action-golangci-lint@v2
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.REVIEW_DOG_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.REVIEW_DOG_TOKEN }}
+      - name: Set Up Golint
+        run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.61.0
+      - uses: reviewdog/action-setup@v1
         with:
-          tool_name: 'golangci-lint'
-          level: 'warning'
-          reporter: 'github-pr-review'
-          golangci_lint_version: 'v1.61.0'
-          go_version: '1.22'
-          cache: false
+          reviewdog_version: latest
+      - name: Run golang-ci & reviewdog
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          golangci-lint run | reviewdog -reporter=github-pr-review -f=golangci-lint
