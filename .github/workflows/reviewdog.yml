@@ -5,12 +5,12 @@ on:
     paths:
       - '**.go'
       - 'go.mod'
-      - '.github/workflows/reviewdog.yml'
+      - '.github/workflows/.reviewdog.yml'
   pull_request:
     paths:
       - '**.go'
       - 'go.mod'
-      - '.github/workflows/reviewdog.yml'
+      - '.github/workflows/.reviewdog.yml'
 
 jobs:
   review-dog:
@@ -30,11 +30,13 @@ jobs:
           cache: false
       - run: go get
       - run: go generate ./...
+      - name: Set Up Golint
+        run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.61.0
       - uses: reviewdog/action-setup@v1
         with:
           reviewdog_version: latest
-      - name: Run reviewdog
+      - name: Run golang-ci & reviewdog
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.REVIEW_DOG_TOKEN }}
         run: |
-          reviewdog -reporter=github-pr-review -runners=golint,govet
+          golangci-lint run | reviewdog -reporter=github-pr-review -f=golangci-lint
