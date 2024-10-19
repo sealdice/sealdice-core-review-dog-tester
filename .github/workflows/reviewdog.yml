@@ -14,6 +14,10 @@ on:
 
 jobs:
   review-dog:
+    permissions:
+      checks: write
+      contents: read
+      pull-requests: write
     name: Review Dog
     runs-on: ubuntu-latest
     steps:
